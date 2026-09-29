@@ -1,0 +1,61 @@
+# ---------------------------------------------------------------------------
+# Ops Control Center - local development stack
+#
+#   docker compose up -d db        # database only
+#   docker compose up -d --build   # database + API
+#
+# The frontend is run with `npm run dev` (Vite) so hot reload works.
+# ---------------------------------------------------------------------------
+
+services:
+  db:
+    image: postgres:16-alpine
+    container_name: opscc-db
+    restart: unless-stopped
+    environment:
+      POSTGRES_USER: ${POSTGRES_USER:-ops}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:-change-me-locally}
+      POSTGRES_DB: ${POSTGRES_DB:-ops_control_center}
+    ports:
+      - "${POSTGRES_PORT:-5432}:5432"
+    volumes:
+      - opscc_pgdata:/var/lib/postgresql/data
+    healthcheck:
+      test:
+        ["CMD-SHELL", "pg_isready -U ${POSTGRES_USER:-ops} -d ${POSTGRES_DB:-ops_control_center}"]
+      interval: 5s
+      timeout: 5s
+      retries: 12
+      start_period: 10s
+
+  api:
+    build:
+      context: ./backend
+      dockerfile: Dockerfile
+    container_name: opscc-api
+    restart: unless-stopped
+    depends_on:
+      db:
+        condition: service_healthy
+    environment:
+      OPS_ENV: ${OPS_ENV:-development}
+      OPS_TENANT_ID: ${OPS_TENANT_ID:-BPSEC}
+      OPS_CORS_ORIGINS: ${OPS_CORS_ORIGINS:-http://localhost:5173}
+      DATABASE_URL: postgresql+psycopg://${POSTGRES_USER:-ops}:${POSTGRES_PASSWORD:-change-me-locally}@db:5432/${POSTGRES_DB:-ops_control_center}
+      OPS_JWT_SECRET: ${OPS_JWT_SECRET:-dev-only-insecure-secret-replace-me}
+      OPS_AUTH_MODE: ${OPS_AUTH_MODE:-bre}
+      OPS_LOCAL_AUTH_ENABLED: ${OPS_LOCAL_AUTH_ENABLED:-true}
+      OPS_LOCAL_AUTH_USERS_JSON: /app/scripts/local_auth_users.json
+      OPS_LOG_LEVEL: ${OPS_LOG_LEVEL:-INFO}
+      OPS_LOG_FORMAT: ${OPS_LOG_FORMAT:-json}
+    ports:
+      - "8000:8000"
+    healthcheck:
+      test: ["CMD", "python", "-c", "import urllib.request; urllib.request.urlopen('http://localhost:8000/health/live')"]
+      interval: 15s
+      timeout: 5s
+      retries: 5
+      start_period: 20s
+
+volumes:
+  opscc_pgdata:

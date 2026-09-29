@@ -1,0 +1,94 @@
+{
+  "$comment": [
+    "LOCAL DEVELOPMENT CREDENTIALS ONLY.",
+    "This file is refused outside OPS_ENV=development - app/config.py raises on",
+    "local auth mode in staging and production, so shipping it changes nothing.",
+    "passwords here are compared with hmac.compare_digest and are never logged.",
+    "These accounts are provisioned into ops_users by scripts/seed.py; the",
+    "password itself is never stored in the database."
+  ],
+  "users": [
+    {
+      "username": "admin",
+      "password": "admin-local-dev",
+      "display_name": "Aarti Admin",
+      "email": "aarti.admin@example.internal",
+      "bre_user_id": "bre-local-0001",
+      "roles": ["OPS_ADMIN"],
+      "active": true
+    },
+    {
+      "username": "manager",
+      "password": "manager-local-dev",
+      "display_name": "Bhavesh Manager",
+      "email": "bhavesh.manager@example.internal",
+      "bre_user_id": "bre-local-0002",
+      "roles": ["OPS_MANAGER"],
+      "active": true
+    },
+    {
+      "username": "lead",
+      "password": "lead-local-dev",
+      "display_name": "Chitra Teamlead",
+      "email": "chitra.lead@example.internal",
+      "bre_user_id": "bre-local-0003",
+      "roles": ["TEAM_LEAD"],
+      "active": true
+    },
+    {
+      "username": "agent",
+      "password": "agent-local-dev",
+      "display_name": "Deepak Agent",
+      "email": "deepak.agent@example.internal",
+      "bre_user_id": "bre-local-0004",
+      "roles": ["AGENT"],
+      "active": true
+    },
+    {
+      "username": "credit",
+      "password": "credit-local-dev",
+      "display_name": "Divya Credit",
+      "email": "divya.credit@example.internal",
+      "bre_user_id": "bre-local-0005",
+      "roles": ["CREDIT_SPECIALIST"],
+      "active": true
+    },
+    {
+      "username": "collections",
+      "password": "collections-local-dev",
+      "display_name": "Eshan Collections",
+      "email": "eshan.collections@example.internal",
+      "bre_user_id": "bre-local-0006",
+      "roles": ["COLLECTIONS_SPECIALIST"],
+      "active": true
+    },
+    {
+      "username": "auditor",
+      "password": "auditor-local-dev",
+      "display_name": "Farah Auditor",
+      "email": "farah.auditor@example.internal",
+      "bre_user_id": "bre-local-0007",
+      "roles": ["AUDITOR"],
+      "active": true
+    },
+    {
+      "username": "head",
+      "password": "head-local-dev",
+      "display_name": "Girish Head",
+      "email": "girish.head@example.internal",
+      "bre_user_id": "bre-local-0008",
+      "roles": ["HEAD_OF_OPERATIONS"],
+      "active": true,
+      "mfa_required": true
+    },
+    {
+      "username": "suspended",
+      "password": "suspended-local-dev",
+      "display_name": "Inactive Sam",
+      "email": "sam.inactive@example.internal",
+      "bre_user_id": "bre-local-0009",
+      "roles": ["AGENT"],
+      "active": false
+    }
+  ]
+}
